@@ -33,4 +33,8 @@ public class CandidateForTechnologyService {
     public List<CandidateForTechnology> getCandidatesForTechnologyByCandidate(Candidate candidate) {
         return candidateForTechnologyRepository.findByCandidate(candidate);
     }
+
+    public List<CandidateForTechnology> getCandidatesForTechnologyByTechnology(Technology technology) {
+        return candidateForTechnologyRepository.findByTechnology(technology);
+    }
 }

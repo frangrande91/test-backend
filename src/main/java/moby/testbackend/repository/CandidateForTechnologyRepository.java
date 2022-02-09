@@ -13,4 +13,5 @@ public interface CandidateForTechnologyRepository extends JpaRepository<Candidat
 
     CandidateForTechnology findByCandidateAndTechnology(Candidate candidate, Technology technology);
     List<CandidateForTechnology> findByCandidate(Candidate candidate);
+    List<CandidateForTechnology> findByTechnology(Technology technology);
 }

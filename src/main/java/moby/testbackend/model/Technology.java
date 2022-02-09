@@ -19,7 +19,7 @@ public class Technology {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idTechnlogy;
+    private Integer idTechnology;
 
     private String name;
     private String version;
