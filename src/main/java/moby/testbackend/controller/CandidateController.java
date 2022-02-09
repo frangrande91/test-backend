@@ -1,6 +1,8 @@
 package moby.testbackend.controller;
 
 import moby.testbackend.model.Candidate;
+import moby.testbackend.model.Technology;
+import moby.testbackend.model.dto.CandidateDto;
 import moby.testbackend.model.utils.ResponseMessage;
 import moby.testbackend.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,25 +49,33 @@ public class CandidateController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Candidate>> getAllCandidates(@RequestParam (value = "size", defaultValue = "10") Integer size,
-                                                            @RequestParam (value = "page", defaultValue = "0") Integer page){
+    public ResponseEntity<List<CandidateDto>> getAllCandidates(@RequestParam (value = "size", defaultValue = "10") Integer size,
+                                                                @RequestParam (value = "page", defaultValue = "0") Integer page){
         Pageable pageable = PageRequest.of(page, size);
         return listResponseEntity(candidateService.getAllCandidates(pageable));
     }
 
     @GetMapping("/{idCandidate}")
-    public ResponseEntity<Candidate> getCandidateById(@PathVariable Integer idCandidate){
-        return ResponseEntity.ok(candidateService.getCandidateById(idCandidate));
+    public ResponseEntity<CandidateDto> getCandidateById(@PathVariable Integer idCandidate){
+        return ResponseEntity.ok(candidateService.getCandidateDtoById(idCandidate));
     }
 
     @PutMapping("/{idCandidate}/technologies/{idTechnology}")
     public ResponseEntity<ResponseMessage> addTechnologyToCandidate(@PathVariable Integer idCandidate, @PathVariable Integer idTechnology, @RequestParam Integer yearsExperience){
-            Candidate candidate = candidateService.addTechnologyToCandidate(idCandidate, idTechnology, yearsExperience);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .location(buildURL("candidates", candidateService.addCandidate(candidate).getIdCandidate()))
+                    .location(buildURL("candidates", candidateService.addTechnologyToCandidate(idCandidate, idTechnology, yearsExperience).getIdCandidate()))
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(messageResponse("Technology added to candidate"));
+    }
+
+    @PutMapping("/{idCandidate}")
+    public ResponseEntity<ResponseMessage> updateCandidate(@RequestBody Candidate candidate) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .location(buildURL("candidates", candidateService.updateCandidate(candidate).getIdCandidate()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(messageResponse("Technology has been updated"));
     }
 
     @DeleteMapping("/{idCandidate}")
