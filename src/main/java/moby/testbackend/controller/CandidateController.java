@@ -1,6 +1,7 @@
 package moby.testbackend.controller;
 
 import moby.testbackend.model.Candidate;
+import moby.testbackend.model.Technology;
 import moby.testbackend.model.utils.ResponseMessage;
 import moby.testbackend.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,12 +61,20 @@ public class CandidateController {
 
     @PutMapping("/{idCandidate}/technologies/{idTechnology}")
     public ResponseEntity<ResponseMessage> addTechnologyToCandidate(@PathVariable Integer idCandidate, @PathVariable Integer idTechnology, @RequestParam Integer yearsExperience){
-            Candidate candidate = candidateService.addTechnologyToCandidate(idCandidate, idTechnology, yearsExperience);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .location(buildURL("candidates", candidateService.addCandidate(candidate).getIdCandidate()))
+                    .location(buildURL("candidates", candidateService.addTechnologyToCandidate(idCandidate, idTechnology, yearsExperience).getIdCandidate()))
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(messageResponse("Technology added to candidate"));
+    }
+
+    @PutMapping("/{idCandidate}")
+    public ResponseEntity<ResponseMessage> updateCandidate(@RequestBody Candidate candidate) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .location(buildURL("candidates", candidateService.updateCandidate(candidate).getIdCandidate()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(messageResponse("Technology has been updated"));
     }
 
     @DeleteMapping("/{idCandidate}")

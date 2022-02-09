@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import static java.util.Objects.isNull;
+
 @Service
 public class CandidateService {
 
@@ -41,9 +43,15 @@ public class CandidateService {
         return candidate;
     }
 
+    public Candidate updateCandidate(Candidate candidate) {
+        return candidateRepository.save(candidate);
+    }
+
     public void deleteCandidate(Integer idCandidate) {
         Candidate candidate = getCandidateById(idCandidate);
         if(candidateForTechnologyService.getCandidatesForTechnologyByCandidate(candidate).isEmpty())
             candidateRepository.deleteById(idCandidate);
     }
+
+
 }
