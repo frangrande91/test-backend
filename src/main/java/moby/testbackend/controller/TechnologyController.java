@@ -1,6 +1,7 @@
 package moby.testbackend.controller;
 
 import moby.testbackend.model.Technology;
+import moby.testbackend.model.dto.TechnologyDto;
 import moby.testbackend.model.utils.ResponseMessage;
 import moby.testbackend.service.TechnologyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,15 +47,15 @@ public class TechnologyController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Technology>> getAllTechnologies(@RequestParam (value = "size", defaultValue = "10") Integer size,
-                                                               @RequestParam (value = "page", defaultValue = "0") Integer page){
+    public ResponseEntity<List<TechnologyDto>> getAllTechnologies(@RequestParam (value = "size", defaultValue = "10") Integer size,
+                                                                  @RequestParam (value = "page", defaultValue = "0") Integer page){
         Pageable pageable = PageRequest.of(page, size);
         return listResponseEntity(technologyService.getAllTechnologies(pageable));
     }
 
     @GetMapping("/{idTechnology}")
-    public ResponseEntity<Technology> getTechnologyById(@PathVariable Integer idTechnology){
-        return ResponseEntity.ok(technologyService.getTechnologyById(idTechnology));
+    public ResponseEntity<TechnologyDto> getTechnologyById(@PathVariable Integer idTechnology){
+        return ResponseEntity.ok(technologyService.getTechnologyDtoById(idTechnology));
     }
 
     @PutMapping("/{idTechnology}")

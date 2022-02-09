@@ -2,6 +2,7 @@ package moby.testbackend.controller;
 
 import moby.testbackend.model.Candidate;
 import moby.testbackend.model.Technology;
+import moby.testbackend.model.dto.CandidateDto;
 import moby.testbackend.model.utils.ResponseMessage;
 import moby.testbackend.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +49,15 @@ public class CandidateController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Candidate>> getAllCandidates(@RequestParam (value = "size", defaultValue = "10") Integer size,
-                                                            @RequestParam (value = "page", defaultValue = "0") Integer page){
+    public ResponseEntity<List<CandidateDto>> getAllCandidates(@RequestParam (value = "size", defaultValue = "10") Integer size,
+                                                                @RequestParam (value = "page", defaultValue = "0") Integer page){
         Pageable pageable = PageRequest.of(page, size);
         return listResponseEntity(candidateService.getAllCandidates(pageable));
     }
 
     @GetMapping("/{idCandidate}")
-    public ResponseEntity<Candidate> getCandidateById(@PathVariable Integer idCandidate){
-        return ResponseEntity.ok(candidateService.getCandidateById(idCandidate));
+    public ResponseEntity<CandidateDto> getCandidateById(@PathVariable Integer idCandidate){
+        return ResponseEntity.ok(candidateService.getCandidateDtoById(idCandidate));
     }
 
     @PutMapping("/{idCandidate}/technologies/{idTechnology}")
