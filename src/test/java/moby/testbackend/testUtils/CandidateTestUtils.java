@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageImpl;
 import java.util.List;
 import java.util.Set;
 
+import static moby.testbackend.testUtils.CandidateForTechnologyTestUtils.getListExperienceDto;
+
 public class CandidateTestUtils {
 
     public static Candidate getCandidate(){
@@ -29,6 +31,7 @@ public class CandidateTestUtils {
                 .documentType(DocumentType.DNI)
                 .document("12345")
                 .birthdate(null)
+                .technologies(getListExperienceDto())
                 .build();
     }
 
@@ -36,8 +39,14 @@ public class CandidateTestUtils {
         return new PageImpl<>(getListCandidateDto());
     }
 
+    public static Page<Candidate> getPageCandidate() { return new PageImpl<>(getListCandidate());}
+
     public static List<CandidateDto> getListCandidateDto(){
         return List.of(getCandidateDto());
+    }
+
+    public static List<Candidate> getListCandidate(){
+        return List.of(getCandidate());
     }
 
     public static Set<CandidateDto> getSetCandidateDto(){
