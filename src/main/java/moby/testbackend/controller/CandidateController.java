@@ -1,5 +1,10 @@
 package moby.testbackend.controller;
 
+import moby.testbackend.exception.CandidateAlreadyExistsException;
+import moby.testbackend.exception.CandidateForTechnologyAlreadyExistsException;
+import moby.testbackend.exception.CandidateNotExistsException;
+import moby.testbackend.exception.RestrictDeleteException;
+import moby.testbackend.exception.TechnologyNotExistsException;
 import moby.testbackend.model.Candidate;
 import moby.testbackend.model.Technology;
 import moby.testbackend.model.dto.CandidateDto;
@@ -40,7 +45,7 @@ public class CandidateController {
 
 
     @PostMapping
-    public ResponseEntity<ResponseMessage> addCandidate(@RequestBody Candidate candidate){
+    public ResponseEntity<ResponseMessage> addCandidate(@RequestBody Candidate candidate) throws CandidateAlreadyExistsException {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .location(buildURL("candidates", candidateService.addCandidate(candidate).getIdCandidate()))
@@ -56,12 +61,12 @@ public class CandidateController {
     }
 
     @GetMapping("/{idCandidate}")
-    public ResponseEntity<CandidateDto> getCandidateById(@PathVariable Integer idCandidate){
+    public ResponseEntity<CandidateDto> getCandidateById(@PathVariable Integer idCandidate) throws CandidateNotExistsException {
         return ResponseEntity.ok(candidateService.getCandidateDtoById(idCandidate));
     }
 
     @PutMapping("/{idCandidate}/technologies/{idTechnology}")
-    public ResponseEntity<ResponseMessage> addTechnologyToCandidate(@PathVariable Integer idCandidate, @PathVariable Integer idTechnology, @RequestParam Integer yearsExperience){
+    public ResponseEntity<ResponseMessage> addTechnologyToCandidate(@PathVariable Integer idCandidate, @PathVariable Integer idTechnology, @RequestParam Integer yearsExperience) throws CandidateNotExistsException, TechnologyNotExistsException, CandidateForTechnologyAlreadyExistsException {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .location(buildURL("candidates", candidateService.addTechnologyToCandidate(idCandidate, idTechnology, yearsExperience).getIdCandidate()))
@@ -70,7 +75,7 @@ public class CandidateController {
     }
 
     @PutMapping("/{idCandidate}")
-    public ResponseEntity<ResponseMessage> updateCandidate(@RequestBody Candidate candidate) {
+    public ResponseEntity<ResponseMessage> updateCandidate(@RequestBody Candidate candidate) throws CandidateNotExistsException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .location(buildURL("candidates", candidateService.updateCandidate(candidate).getIdCandidate()))
@@ -79,7 +84,7 @@ public class CandidateController {
     }
 
     @DeleteMapping("/{idCandidate}")
-    public ResponseEntity<ResponseMessage> deleteCandidate(@PathVariable Integer idCandidate){
+    public ResponseEntity<ResponseMessage> deleteCandidate(@PathVariable Integer idCandidate) throws CandidateNotExistsException, RestrictDeleteException {
         candidateService.deleteCandidate(idCandidate);
         return ResponseEntity
                 .status(HttpStatus.OK)

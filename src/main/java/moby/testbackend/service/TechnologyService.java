@@ -1,5 +1,8 @@
 package moby.testbackend.service;
 
+import moby.testbackend.exception.RestrictDeleteException;
+import moby.testbackend.exception.TechnologyAlreadyExistsException;
+import moby.testbackend.exception.TechnologyNotExistsException;
 import moby.testbackend.model.Technology;
 import moby.testbackend.model.dto.TechnologyDto;
 import moby.testbackend.repository.TechnologyRepository;
@@ -29,8 +32,11 @@ public class TechnologyService {
         this.modelMapper = modelMapper;
     }
 
-    public Technology addTechnology(Technology technology) {
-        return technologyRepository.save(technology);
+    public Technology addTechnology(Technology technology) throws TechnologyAlreadyExistsException {
+        if(!isNull(technologyRepository.findByNameAndVersion(technology.getName(), technology.getVersion())))
+            throw new TechnologyAlreadyExistsException("Technology " + technology.getName() + " version " + technology.getVersion() + " already exists");
+        else
+            return technologyRepository.save(technology);
     }
 
     public Page<TechnologyDto> getAllTechnologies(Pageable pageable) {
@@ -41,8 +47,8 @@ public class TechnologyService {
         return new PageImpl<>(technologiesDto);
     }
 
-    public Technology getTechnologyById(Integer idTechnology){
-        return technologyRepository.findById(idTechnology).orElse(null);
+    public Technology getTechnologyById(Integer idTechnology) throws TechnologyNotExistsException {
+        return technologyRepository.findById(idTechnology).orElseThrow(() -> new TechnologyNotExistsException("Technology not exists") );
     }
 
     public TechnologyDto getTechnologyDtoById(Integer idTechnology) {
@@ -50,13 +56,18 @@ public class TechnologyService {
         return modelMapper.map(technology, TechnologyDto.class);
     }
 
-    public Technology updateTechnology(Technology technology) {
-        return technologyRepository.save(technology);
+    public Technology updateTechnology(Technology technology) throws TechnologyNotExistsException {
+        if(isNull(technologyRepository.findByName(technology.getName())))
+            throw new TechnologyNotExistsException("Technology " + technology.getName() + " not exists");
+        else
+            return technologyRepository.save(technology);
     }
 
-    public void deleteTechnology(Integer idTechnology) {
+    public void deleteTechnology(Integer idTechnology) throws TechnologyNotExistsException, RestrictDeleteException {
         Technology technology = getTechnologyById(idTechnology);
-        if(isNull(candidateForTechnologyService.getCandidatesForTechnologyByTechnology(technology)))
+        if(!isNull(candidateForTechnologyService.getCandidatesForTechnologyByTechnology(technology)))
+            throw new RestrictDeleteException("Can not delete this technology because it depends of another objects");
+        else
             technologyRepository.deleteById(idTechnology);
     }
 }

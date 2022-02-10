@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import moby.testbackend.model.enums.DocumentType;
-import org.springframework.data.annotation.AccessType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

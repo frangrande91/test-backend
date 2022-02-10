@@ -1,5 +1,10 @@
 package moby.testbackend.service;
 
+import moby.testbackend.exception.CandidateAlreadyExistsException;
+import moby.testbackend.exception.CandidateForTechnologyAlreadyExistsException;
+import moby.testbackend.exception.CandidateNotExistsException;
+import moby.testbackend.exception.RestrictDeleteException;
+import moby.testbackend.exception.TechnologyNotExistsException;
 import moby.testbackend.model.Candidate;
 import moby.testbackend.model.Technology;
 import moby.testbackend.model.dto.CandidateDto;
@@ -13,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static moby.testbackend.converter.CandidateToCandidateDto.convert;
 
 @Service
@@ -29,8 +35,12 @@ public class CandidateService {
         this.candidateForTechnologyService = candidateForTechnologyService;
     }
 
-    public Candidate addCandidate(Candidate candidate) {
-        return candidateRepository.save(candidate);
+    public Candidate addCandidate(Candidate candidate) throws CandidateAlreadyExistsException {
+        if (!isNull(candidateRepository.findByIdCandidateOrDocument(candidate.getIdCandidate(), candidate.getDocument()))) {
+            throw new CandidateAlreadyExistsException("Candidate already exists");
+        } else {
+            return candidateRepository.save(candidate);
+        }
     }
 
     public Page<CandidateDto> getAllCandidates(Pageable pageable) {
@@ -41,29 +51,34 @@ public class CandidateService {
         return new PageImpl<>(candidatesDto);
     }
 
-    public Candidate getCandidateById(Integer idCandidate) {
-        return candidateRepository.findById(idCandidate).orElse(null);
+    public Candidate getCandidateById(Integer idCandidate) throws CandidateNotExistsException {
+        return candidateRepository.findById(idCandidate).orElseThrow(() -> new CandidateNotExistsException("Candidate not exists"));
     }
 
-    public CandidateDto getCandidateDtoById(Integer idCandidate) {
+    public CandidateDto getCandidateDtoById(Integer idCandidate) throws CandidateNotExistsException {
         Candidate candidate = getCandidateById(idCandidate);
         return convert(candidate, candidateForTechnologyService.getExperiencesByCandidate(candidate));
     }
 
-    public Candidate addTechnologyToCandidate(Integer idCandidate, Integer idTechnology, Integer yearsExperience) {
+    public Candidate addTechnologyToCandidate(Integer idCandidate, Integer idTechnology, Integer yearsExperience) throws CandidateNotExistsException, TechnologyNotExistsException, CandidateForTechnologyAlreadyExistsException {
         Candidate candidate = getCandidateById(idCandidate);
         Technology technology = technologyService.getTechnologyById(idTechnology);
         candidateForTechnologyService.addCandidateForTechnology(candidate, technology, yearsExperience);
         return candidate;
     }
 
-    public Candidate updateCandidate(Candidate candidate) {
-        return candidateRepository.save(candidate);
+    public Candidate updateCandidate(Candidate candidate) throws CandidateNotExistsException {
+        if(isNull(getCandidateById(candidate.getIdCandidate())))
+            throw new CandidateNotExistsException("Candidate not exists");
+        else
+            return candidateRepository.save(candidate);
     }
 
-    public void deleteCandidate(Integer idCandidate) {
+    public void deleteCandidate(Integer idCandidate) throws CandidateNotExistsException, RestrictDeleteException {
         Candidate candidate = getCandidateById(idCandidate);
-        if(candidateForTechnologyService.getCandidatesForTechnologyByCandidate(candidate).isEmpty())
+        if(!candidateForTechnologyService.getCandidatesForTechnologyByCandidate(candidate).isEmpty())
+            throw new RestrictDeleteException("Can not delete this candidate because it depends of another objects");
+        else
             candidateRepository.deleteById(idCandidate);
     }
 
