@@ -6,10 +6,8 @@ import moby.testbackend.model.CandidateForTechnology;
 import moby.testbackend.model.Technology;
 import moby.testbackend.model.dto.ExperienceDto;
 import moby.testbackend.repository.CandidateForTechnologyRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +19,10 @@ import static moby.testbackend.converter.CandidateForTechnologyToExperienceDto.c
 public class CandidateForTechnologyService {
 
     private final CandidateForTechnologyRepository candidateForTechnologyRepository;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public CandidateForTechnologyService(CandidateForTechnologyRepository candidateForTechnologyRepository, ModelMapper modelMapper){
+    public CandidateForTechnologyService(CandidateForTechnologyRepository candidateForTechnologyRepository){
         this.candidateForTechnologyRepository = candidateForTechnologyRepository;
-        this.modelMapper = modelMapper;
     }
 
     public void addCandidateForTechnology(Candidate candidate, Technology technology, Integer yearsExperience) throws CandidateForTechnologyAlreadyExistsException {
@@ -56,5 +52,9 @@ public class CandidateForTechnologyService {
 
     public List<CandidateForTechnology> getCandidatesForTechnologyByTechnology(Technology technology) {
         return candidateForTechnologyRepository.findByTechnology(technology);
+    }
+
+    public List<CandidateForTechnology> getCandidatesForTechnologyByNameTechnology(String nameTechnology){
+        return candidateForTechnologyRepository.findByNameTechnology(nameTechnology);
     }
 }

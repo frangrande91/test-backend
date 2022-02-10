@@ -6,8 +6,10 @@ import moby.testbackend.exception.CandidateNotExistsException;
 import moby.testbackend.exception.RestrictDeleteException;
 import moby.testbackend.exception.TechnologyNotExistsException;
 import moby.testbackend.model.Candidate;
+import moby.testbackend.model.CandidateForTechnology;
 import moby.testbackend.model.Technology;
 import moby.testbackend.model.dto.CandidateDto;
+import moby.testbackend.model.dto.ExperienceDto;
 import moby.testbackend.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static moby.testbackend.converter.CandidateToCandidateDto.convert;
@@ -58,6 +62,21 @@ public class CandidateService {
     public CandidateDto getCandidateDtoById(Integer idCandidate) throws CandidateNotExistsException {
         Candidate candidate = getCandidateById(idCandidate);
         return convert(candidate, candidateForTechnologyService.getExperiencesByCandidate(candidate));
+    }
+
+    public Set<CandidateDto> getCandidatesByTechnology(String nameTechnology){
+        Set<CandidateDto> candidatesDto = new HashSet<>();
+        List<CandidateForTechnology> candidatesForTechnologies = candidateForTechnologyService.getCandidatesForTechnologyByNameTechnology(nameTechnology);
+
+        for(CandidateForTechnology cxt : candidatesForTechnologies){
+            List<ExperienceDto> technologies = new ArrayList<>();
+            for(ExperienceDto experience : candidateForTechnologyService.getExperiencesByCandidate(cxt.getCandidate())){
+                if(experience.getName().equals(nameTechnology))
+                    technologies.add(experience);
+            }
+            candidatesDto.add(convert(cxt.getCandidate(), technologies));
+        }
+        return candidatesDto;
     }
 
     public Candidate addTechnologyToCandidate(Integer idCandidate, Integer idTechnology, Integer yearsExperience) throws CandidateNotExistsException, TechnologyNotExistsException, CandidateForTechnologyAlreadyExistsException {

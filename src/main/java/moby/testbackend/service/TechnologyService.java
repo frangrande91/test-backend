@@ -57,7 +57,7 @@ public class TechnologyService {
     }
 
     public Technology updateTechnology(Technology technology) throws TechnologyNotExistsException {
-        if(isNull(technologyRepository.findByName(technology.getName())))
+        if(isNull(technologyRepository.findById(technology.getIdTechnology()).orElse(null)))
             throw new TechnologyNotExistsException("Technology " + technology.getName() + " not exists");
         else
             return technologyRepository.save(technology);

@@ -6,7 +6,6 @@ import moby.testbackend.exception.CandidateNotExistsException;
 import moby.testbackend.exception.RestrictDeleteException;
 import moby.testbackend.exception.TechnologyNotExistsException;
 import moby.testbackend.model.Candidate;
-import moby.testbackend.model.Technology;
 import moby.testbackend.model.dto.CandidateDto;
 import moby.testbackend.model.utils.ResponseMessage;
 import moby.testbackend.service.CandidateService;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 import static moby.testbackend.utils.EntityURLBuilder.buildURL;
 import static moby.testbackend.utils.ResponseUtil.listResponseEntity;
@@ -63,6 +63,11 @@ public class CandidateController {
     @GetMapping("/{idCandidate}")
     public ResponseEntity<CandidateDto> getCandidateById(@PathVariable Integer idCandidate) throws CandidateNotExistsException {
         return ResponseEntity.ok(candidateService.getCandidateDtoById(idCandidate));
+    }
+
+    @GetMapping("/technologies/{nameTechnology}")
+    public ResponseEntity<Set<CandidateDto>> getCandidatesByTechnology(@PathVariable String nameTechnology){
+        return ResponseEntity.ok(candidateService.getCandidatesByTechnology(nameTechnology));
     }
 
     @PutMapping("/{idCandidate}/technologies/{idTechnology}")
