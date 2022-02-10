@@ -87,7 +87,7 @@ public class CandidateService {
     }
 
     public Candidate updateCandidate(Candidate candidate) throws CandidateNotExistsException {
-        if(isNull(getCandidateById(candidate.getIdCandidate())))
+        if(isNull(candidateRepository.findByIdCandidateOrDocument(candidate.getIdCandidate(), candidate.getDocument())))
             throw new CandidateNotExistsException("Candidate not exists");
         else
             return candidateRepository.save(candidate);
