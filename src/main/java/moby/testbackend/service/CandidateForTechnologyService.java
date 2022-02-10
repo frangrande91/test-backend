@@ -1,5 +1,6 @@
 package moby.testbackend.service;
 
+import moby.testbackend.exception.CandidateForTechnologyAlreadyExistsException;
 import moby.testbackend.model.Candidate;
 import moby.testbackend.model.CandidateForTechnology;
 import moby.testbackend.model.Technology;
@@ -28,13 +29,17 @@ public class CandidateForTechnologyService {
         this.modelMapper = modelMapper;
     }
 
-    public void addCandidateForTechnology(Candidate candidate, Technology technology, Integer yearsExperience) {
-        if(isNull(candidateForTechnologyRepository.findByCandidateAndTechnology(candidate, technology)))
+    public void addCandidateForTechnology(Candidate candidate, Technology technology, Integer yearsExperience) throws CandidateForTechnologyAlreadyExistsException {
+        CandidateForTechnology cxt = candidateForTechnologyRepository.findByCandidateAndTechnology(candidate, technology);
+        if(!isNull(cxt))
+            throw new CandidateForTechnologyAlreadyExistsException("Thechnology " + technology.getName() + " already exists for this candidate");
+        else {
             candidateForTechnologyRepository.save(CandidateForTechnology.builder()
-                                                    .candidate(candidate)
-                                                    .technology(technology)
-                                                    .yearsExperience(yearsExperience)
-                                                    .build());
+                    .candidate(candidate)
+                    .technology(technology)
+                    .yearsExperience(yearsExperience)
+                    .build());
+        }
     }
 
     public List<CandidateForTechnology> getCandidatesForTechnologyByCandidate(Candidate candidate) {

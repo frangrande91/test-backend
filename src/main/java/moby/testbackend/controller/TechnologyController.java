@@ -1,5 +1,8 @@
 package moby.testbackend.controller;
 
+import moby.testbackend.exception.RestrictDeleteException;
+import moby.testbackend.exception.TechnologyAlreadyExistsException;
+import moby.testbackend.exception.TechnologyNotExistsException;
 import moby.testbackend.model.Technology;
 import moby.testbackend.model.dto.TechnologyDto;
 import moby.testbackend.model.utils.ResponseMessage;
@@ -38,7 +41,7 @@ public class TechnologyController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseMessage> addTechnology(@RequestBody Technology technology){
+    public ResponseEntity<ResponseMessage> addTechnology(@RequestBody Technology technology) throws TechnologyAlreadyExistsException {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .location(buildURL("technologies", technologyService.addTechnology(technology).getIdTechnology()))
@@ -59,7 +62,7 @@ public class TechnologyController {
     }
 
     @PutMapping("/{idTechnology}")
-    public ResponseEntity<ResponseMessage> updateTechnology(@RequestBody Technology technology){
+    public ResponseEntity<ResponseMessage> updateTechnology(@RequestBody Technology technology) throws TechnologyNotExistsException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .location(buildURL("technologies", technologyService.updateTechnology(technology).getIdTechnology()))
@@ -68,8 +71,8 @@ public class TechnologyController {
     }
 
     @DeleteMapping("/{idTechnology}")
-    public ResponseEntity<ResponseMessage> deleteTechnology(@PathVariable Integer idTechnlogy){
-        technologyService.deleteTechnology(idTechnlogy);
+    public ResponseEntity<ResponseMessage> deleteTechnology(@PathVariable Integer idTechnology) throws TechnologyNotExistsException, RestrictDeleteException {
+        technologyService.deleteTechnology(idTechnology);
         return ResponseEntity.ok(messageResponse("Technology has been deleted"));
     }
 }
