@@ -1,5 +1,6 @@
 package moby.testbackend.controller;
 
+import io.swagger.annotations.ApiOperation;
 import moby.testbackend.exception.RestrictDeleteException;
 import moby.testbackend.exception.TechnologyAlreadyExistsException;
 import moby.testbackend.exception.TechnologyNotExistsException;
@@ -70,6 +71,7 @@ public class TechnologyController {
                 .body(messageResponse("Technology has been updated"));
     }
 
+    @ApiOperation(value = "Physical deletion", notes = "Does not delete technologies that have associated candidates")
     @DeleteMapping("/{idTechnology}")
     public ResponseEntity<ResponseMessage> deleteTechnology(@PathVariable Integer idTechnology) throws TechnologyNotExistsException, RestrictDeleteException {
         technologyService.deleteTechnology(idTechnology);

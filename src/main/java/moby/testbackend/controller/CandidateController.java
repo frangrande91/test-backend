@@ -1,5 +1,6 @@
 package moby.testbackend.controller;
 
+import io.swagger.annotations.ApiOperation;
 import moby.testbackend.exception.CandidateAlreadyExistsException;
 import moby.testbackend.exception.CandidateForTechnologyAlreadyExistsException;
 import moby.testbackend.exception.CandidateNotExistsException;
@@ -65,6 +66,7 @@ public class CandidateController {
         return ResponseEntity.ok(candidateService.getCandidateDtoById(idCandidate));
     }
 
+    @ApiOperation(value = "Get all candidates by technology name", notes = "Get all candidates who have this technology with their years of experience in each version")
     @GetMapping("/technologies/{nameTechnology}")
     public ResponseEntity<Set<CandidateDto>> getCandidatesByTechnology(@PathVariable String nameTechnology){
         return ResponseEntity.ok(candidateService.getCandidatesByTechnology(nameTechnology));
@@ -88,6 +90,7 @@ public class CandidateController {
                 .body(messageResponse("Technology has been updated"));
     }
 
+    @ApiOperation(value = "Physical deletion", notes = "Does not delete candidates that have associated technologies")
     @DeleteMapping("/{idCandidate}")
     public ResponseEntity<ResponseMessage> deleteCandidate(@PathVariable Integer idCandidate) throws CandidateNotExistsException, RestrictDeleteException {
         candidateService.deleteCandidate(idCandidate);
