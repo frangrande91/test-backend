@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface TechnologyRepository extends JpaRepository<Technology, Integer> {
 
     Technology findByNameAndVersion(String name, String version);
-
-    Technology findByName(String name);
 }

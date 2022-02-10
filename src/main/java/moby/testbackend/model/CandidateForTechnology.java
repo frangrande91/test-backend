@@ -10,8 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -28,13 +28,14 @@ public class CandidateForTechnology {
 
     @NotNull(message = "Candidate must not be null")
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_candidate")
     private Candidate candidate;
 
     @NotNull(message = "Technology must not be null")
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_technology")
     private Technology technology;
 
     @PositiveOrZero(message = "Years experience must not be less than 0")
-    @NotBlank(message = "Years experience must not be blank o null")
     private Integer yearsExperience;
 }
