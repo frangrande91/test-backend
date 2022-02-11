@@ -1,5 +1,6 @@
 package moby.testbackend.service;
 
+import lombok.extern.java.Log;
 import moby.testbackend.exception.RestrictDeleteException;
 import moby.testbackend.exception.TechnologyAlreadyExistsException;
 import moby.testbackend.exception.TechnologyNotExistsException;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
+@Log
 @Service
 public class TechnologyService {
 
@@ -35,8 +37,10 @@ public class TechnologyService {
     public Technology addTechnology(Technology technology) throws TechnologyAlreadyExistsException {
         if(!isNull(technologyRepository.findByNameAndVersion(technology.getName(), technology.getVersion())))
             throw new TechnologyAlreadyExistsException("Technology " + technology.getName() + " version " + technology.getVersion() + " already exists");
-        else
+        else {
+            log.info("Technology has been created");
             return technologyRepository.save(technology);
+        }
     }
 
     public Page<TechnologyDto> getAllTechnologies(Pageable pageable) {
@@ -59,15 +63,19 @@ public class TechnologyService {
     public Technology updateTechnology(Technology technology) throws TechnologyNotExistsException {
         if(technology.getIdTechnology() == null || getTechnologyById(technology.getIdTechnology()) == null)
             throw new TechnologyNotExistsException("Technology not exists");
-        else
+        else {
+            log.info("Technology updated succesfully");
             return technologyRepository.save(technology);
+        }
     }
 
     public void deleteTechnology(Integer idTechnology) throws TechnologyNotExistsException, RestrictDeleteException {
         Technology technology = getTechnologyById(idTechnology);
         if(!candidateForTechnologyService.getCandidatesForTechnologyByTechnology(technology).isEmpty())
             throw new RestrictDeleteException("Can not delete this technology because it depends of another objects");
-        else
+        else {
+            log.info("Technology deleted succesfully");
             technologyRepository.deleteById(idTechnology);
+        }
     }
 }

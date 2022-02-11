@@ -1,5 +1,6 @@
 package moby.testbackend.service;
 
+import lombok.extern.java.Log;
 import moby.testbackend.exception.CandidateForTechnologyAlreadyExistsException;
 import moby.testbackend.model.Candidate;
 import moby.testbackend.model.CandidateForTechnology;
@@ -15,6 +16,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static moby.testbackend.converter.CandidateForTechnologyToExperienceDto.convert;
 
+@Log
 @Service
 public class CandidateForTechnologyService {
 
@@ -30,6 +32,7 @@ public class CandidateForTechnologyService {
         if(!isNull(cxt))
             throw new CandidateForTechnologyAlreadyExistsException("Thechnology " + technology.getName() + " already exists for this candidate");
         else {
+            log.info("Technology added to candidate");
             candidateForTechnologyRepository.save(CandidateForTechnology.builder()
                     .candidate(candidate)
                     .technology(technology)

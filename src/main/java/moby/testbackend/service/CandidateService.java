@@ -1,5 +1,6 @@
 package moby.testbackend.service;
 
+import lombok.extern.java.Log;
 import moby.testbackend.exception.CandidateAlreadyExistsException;
 import moby.testbackend.exception.CandidateForTechnologyAlreadyExistsException;
 import moby.testbackend.exception.CandidateNotExistsException;
@@ -25,6 +26,7 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static moby.testbackend.converter.CandidateToCandidateDto.convert;
 
+@Log
 @Service
 public class CandidateService {
 
@@ -43,6 +45,7 @@ public class CandidateService {
         if (!isNull(candidateRepository.findByIdCandidateOrDocument(candidate.getIdCandidate(), candidate.getDocument()))) {
             throw new CandidateAlreadyExistsException("Candidate already exists");
         } else {
+            log.info("Candidate has been created");
             return candidateRepository.save(candidate);
         }
     }
@@ -89,16 +92,20 @@ public class CandidateService {
     public Candidate updateCandidate(Candidate candidate) throws CandidateNotExistsException {
         if(candidate.getIdCandidate() == null || getCandidateById(candidate.getIdCandidate()) == null)
             throw new CandidateNotExistsException("Candidate not exists");
-        else
+        else {
+            log.info("Candidate updated succesfully");
             return candidateRepository.save(candidate);
+        }
     }
 
     public void deleteCandidate(Integer idCandidate) throws CandidateNotExistsException, RestrictDeleteException {
         Candidate candidate = getCandidateById(idCandidate);
         if(!candidateForTechnologyService.getCandidatesForTechnologyByCandidate(candidate).isEmpty())
             throw new RestrictDeleteException("Can not delete this candidate because it depends of another objects");
-        else
+        else {
+            log.info("Candidate deleted succesfully");
             candidateRepository.deleteById(idCandidate);
+        }
     }
 
 
