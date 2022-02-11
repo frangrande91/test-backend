@@ -142,24 +142,24 @@ public class CandidateServiceTest {
     public void addTechnologyToCandidateOkTest() throws TechnologyNotExistsException, CandidateForTechnologyAlreadyExistsException, CandidateNotExistsException {
         when(candidateRepository.findById(1)).thenReturn(Optional.of(getCandidate()));
         when(technologyService.getTechnologyById(1)).thenReturn(getTechnology());
-        doNothing().when(candidateForTechnologyService).addCandidateForTechnology(getCandidate(), getTechnology(), 2);
+        doNothing().when(candidateForTechnologyService).addCandidateForTechnology(getCandidate(), getTechnology(), 1);
 
-        Candidate candidate = candidateService.addTechnologyToCandidate(1,1,2);
+        Candidate candidate = candidateService.addTechnologyToCandidate(1,1,1);
 
         assertEquals(getCandidate(), candidate);
         verify(candidateRepository, times(1)).findById(1);
         verify(technologyService, times(1)).getTechnologyById(1);
-        verify(candidateForTechnologyService, times(1)).addCandidateForTechnology(getCandidate(), getTechnology(), 2);
+        verify(candidateForTechnologyService, times(1)).addCandidateForTechnology(getCandidate(), getTechnology(), 1);
     }
 
     @Test
     public void addTechnologyToCandidateCandidateNotExistsTest() throws TechnologyNotExistsException, CandidateForTechnologyAlreadyExistsException {
         when(candidateRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(CandidateNotExistsException.class, () -> candidateService.addTechnologyToCandidate(1, 1, 2));
+        assertThrows(CandidateNotExistsException.class, () -> candidateService.addTechnologyToCandidate(1, 1, 1));
         verify(candidateRepository, times(1)).findById(1);
         verify(technologyService, times(0)).getTechnologyById(1);
-        verify(candidateForTechnologyService, times(0)).addCandidateForTechnology(getCandidate(), getTechnology(), 2);
+        verify(candidateForTechnologyService, times(0)).addCandidateForTechnology(getCandidate(), getTechnology(), 1);
     }
     
     @Test
@@ -167,7 +167,7 @@ public class CandidateServiceTest {
         when(candidateRepository.findById(1)).thenReturn(Optional.of(getCandidate()));
         when(technologyService.getTechnologyById(1)).thenThrow(TechnologyNotExistsException.class);
 
-        assertThrows(TechnologyNotExistsException.class, () -> candidateService.addTechnologyToCandidate(1, 1, 2));
+        assertThrows(TechnologyNotExistsException.class, () -> candidateService.addTechnologyToCandidate(1, 1, 1));
         verify(candidateRepository, times(1)).findById(1);
         verify(technologyService, times(1)).getTechnologyById(1);
         verify(candidateForTechnologyService, times(0)).addCandidateForTechnology(getCandidate(), getTechnology(), 2);
@@ -177,12 +177,12 @@ public class CandidateServiceTest {
     public void addTechnologyToCandidateCandidateForTechnologyAlreadyExistsTest() throws TechnologyNotExistsException, CandidateForTechnologyAlreadyExistsException {
         when(candidateRepository.findById(1)).thenReturn(Optional.of(getCandidate()));
         when(technologyService.getTechnologyById(1)).thenReturn(getTechnology());
-        doThrow(CandidateForTechnologyAlreadyExistsException.class).when(candidateForTechnologyService).addCandidateForTechnology(getCandidate(), getTechnology(), 2);
+        doThrow(CandidateForTechnologyAlreadyExistsException.class).when(candidateForTechnologyService).addCandidateForTechnology(getCandidate(), getTechnology(), 1);
 
-        assertThrows(CandidateForTechnologyAlreadyExistsException.class, () -> candidateService.addTechnologyToCandidate(1, 1, 2));
+        assertThrows(CandidateForTechnologyAlreadyExistsException.class, () -> candidateService.addTechnologyToCandidate(1, 1, 1));
         verify(candidateRepository, times(1)).findById(1);
         verify(technologyService, times(1)).getTechnologyById(1);
-        verify(candidateForTechnologyService, times(1)).addCandidateForTechnology(getCandidate(), getTechnology(), 2);
+        verify(candidateForTechnologyService, times(1)).addCandidateForTechnology(getCandidate(), getTechnology(), 1);
     }
 
     @Test

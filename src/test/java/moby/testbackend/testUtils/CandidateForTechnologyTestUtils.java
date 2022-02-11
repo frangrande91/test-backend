@@ -14,7 +14,7 @@ public class CandidateForTechnologyTestUtils {
         return CandidateForTechnology.builder()
                 .candidate(getCandidate())
                 .technology(getTechnology())
-                .yearsExperience(2)
+                .yearsExperience(1)
                 .build();
     }
 
