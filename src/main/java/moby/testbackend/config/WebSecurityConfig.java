@@ -19,4 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll();
+        http.headers().frameOptions().disable();
+        http.authorizeRequests().antMatchers("/").permitAll().and()
+                .authorizeRequests().antMatchers("/console/**").permitAll();
     }}
