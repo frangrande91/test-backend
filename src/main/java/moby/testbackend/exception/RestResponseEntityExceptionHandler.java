@@ -43,6 +43,11 @@ public class RestResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(messageResponse(ex.getMessage()));
     }
 
+    @ExceptionHandler({UserAlreadyExistsException.class})
+    public ResponseEntity<Object> userAlreadyExists(UserAlreadyExistsException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(messageResponse(ex.getMessage()));
+    }
+
     @ExceptionHandler({RestrictDeleteException.class})
     public ResponseEntity<Object> restrictDelete(RestrictDeleteException ex){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(messageResponse(ex.getMessage()));
