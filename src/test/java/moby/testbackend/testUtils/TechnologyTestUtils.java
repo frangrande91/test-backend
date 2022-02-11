@@ -32,4 +32,12 @@ public class TechnologyTestUtils {
         return List.of(getTechnologyDto());
     }
 
+    public static List<Technology> getListTechnology() {
+        return List.of(getTechnology());
+    }
+
+    public static Page<Technology> getPageTechnology() {
+        return new PageImpl<>(getListTechnology());
+    }
+
 }
