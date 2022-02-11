@@ -81,13 +81,13 @@ public class CandidateController {
                     .body(messageResponse("Technology added to candidate"));
     }
 
-    @PutMapping("/{idCandidate}")
+    @PutMapping()
     public ResponseEntity<ResponseMessage> updateCandidate(@RequestBody Candidate candidate) throws CandidateNotExistsException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .location(buildURL("candidates", candidateService.updateCandidate(candidate).getIdCandidate()))
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(messageResponse("Technology has been updated"));
+                .body(messageResponse("Candidate has been updated"));
     }
 
     @ApiOperation(value = "Physical deletion", notes = "Does not delete candidates that have associated technologies")

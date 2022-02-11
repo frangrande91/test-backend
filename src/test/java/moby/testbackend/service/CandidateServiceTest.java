@@ -23,6 +23,7 @@ import static moby.testbackend.testUtils.CandidateForTechnologyTestUtils.getList
 import static moby.testbackend.testUtils.CandidateForTechnologyTestUtils.getListExperienceDto;
 import static moby.testbackend.testUtils.CandidateTestUtils.getCandidate;
 import static moby.testbackend.testUtils.CandidateTestUtils.getCandidateDto;
+import static moby.testbackend.testUtils.CandidateTestUtils.getCandidateSinId;
 import static moby.testbackend.testUtils.CandidateTestUtils.getPageCandidate;
 import static moby.testbackend.testUtils.CandidateTestUtils.getPageCandidateDto;
 import static moby.testbackend.testUtils.CandidateTestUtils.getSetCandidateDto;
@@ -30,6 +31,7 @@ import static moby.testbackend.testUtils.TechnologyTestUtils.getTechnology;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -187,24 +189,24 @@ public class CandidateServiceTest {
 
     @Test
     public void updateCandidateOkTest() throws CandidateNotExistsException {
-        when(candidateRepository.findByIdCandidateOrDocument(1, "12345")).thenReturn(getCandidate());
+        when(candidateRepository.findById(1)).thenReturn(Optional.of(getCandidate()));
         when(candidateRepository.save(getCandidate())).thenReturn(getCandidate());
 
         Candidate candidate = candidateService.updateCandidate(getCandidate());
 
         assertEquals(getCandidate(), candidate);
-        verify(candidateRepository, times(1)).findByIdCandidateOrDocument(1, "12345");
+        verify(candidateRepository, times(1)).findById(1);
         verify(candidateRepository, times(1)).save(getCandidate());
     }
 
     @Test
     public void updateCandidateNotExistsTest() {
-        when(candidateRepository.findByIdCandidateOrDocument(1, "12345")).thenReturn(null);
+        when(candidateRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(CandidateNotExistsException.class, () -> candidateService.updateCandidate(getCandidate()));
-        verify(candidateRepository, times(1)).findByIdCandidateOrDocument(1, "12345");
-        verify(candidateRepository, times(0)).save(getCandidate());
+        assertThrows(CandidateNotExistsException.class, () -> candidateService.updateCandidate(getCandidateSinId()));
+        verify(candidateRepository, times(0)).save(getCandidateSinId());
     }
+
 
     @Test
     public void deleteCandidateOkTest() throws RestrictDeleteException, CandidateNotExistsException {

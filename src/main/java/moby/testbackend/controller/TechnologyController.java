@@ -62,7 +62,7 @@ public class TechnologyController {
         return ResponseEntity.ok(technologyService.getTechnologyDtoById(idTechnology));
     }
 
-    @PutMapping("/{idTechnology}")
+    @PutMapping()
     public ResponseEntity<ResponseMessage> updateTechnology(@RequestBody Technology technology) throws TechnologyNotExistsException {
         return ResponseEntity
                 .status(HttpStatus.OK)

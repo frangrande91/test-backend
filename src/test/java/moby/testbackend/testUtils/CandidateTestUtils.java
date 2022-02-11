@@ -24,6 +24,16 @@ public class CandidateTestUtils {
                 .build();
     }
 
+    public static Candidate getCandidateSinId(){
+        return Candidate.builder()
+                .name("Bruce")
+                .surname("Wayne")
+                .documentType(DocumentType.DNI)
+                .document("12345")
+                .birthdate(null)
+                .build();
+    }
+
     public static CandidateDto getCandidateDto(){
         return CandidateDto.builder()
                 .name("Bruce")

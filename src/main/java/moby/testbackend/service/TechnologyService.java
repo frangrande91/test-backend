@@ -57,15 +57,15 @@ public class TechnologyService {
     }
 
     public Technology updateTechnology(Technology technology) throws TechnologyNotExistsException {
-        if(isNull(technologyRepository.findById(technology.getIdTechnology()).orElse(null)))
-            throw new TechnologyNotExistsException("Technology " + technology.getName() + " not exists");
+        if(technology.getIdTechnology() == null || getTechnologyById(technology.getIdTechnology()) == null)
+            throw new TechnologyNotExistsException("Technology not exists");
         else
             return technologyRepository.save(technology);
     }
 
     public void deleteTechnology(Integer idTechnology) throws TechnologyNotExistsException, RestrictDeleteException {
         Technology technology = getTechnologyById(idTechnology);
-        if(!isNull(candidateForTechnologyService.getCandidatesForTechnologyByTechnology(technology)))
+        if(!candidateForTechnologyService.getCandidatesForTechnologyByTechnology(technology).isEmpty())
             throw new RestrictDeleteException("Can not delete this technology because it depends of another objects");
         else
             technologyRepository.deleteById(idTechnology);
