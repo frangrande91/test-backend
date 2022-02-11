@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static moby.testbackend.testUtils.CandidateForTechnologyTestUtils.getListCandidateForTechnology;
@@ -131,7 +132,7 @@ public class TechnologyServiceTest {
     @Test
     public void deleteTechnologyOkTest() throws TechnologyNotExistsException, RestrictDeleteException {
         when(technologyRepository.findById(1)).thenReturn(Optional.of(getTechnology()));
-        when(candidateForTechnologyService.getCandidatesForTechnologyByTechnology(getTechnology())).thenReturn(null);
+        when(candidateForTechnologyService.getCandidatesForTechnologyByTechnology(getTechnology())).thenReturn(List.of());
         doNothing().when(technologyRepository).deleteById(1);
 
         technologyService.deleteTechnology(1);
